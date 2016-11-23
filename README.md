@@ -1,4 +1,5 @@
 # weather-java
+[![Build Status](https://travis-ci.org/ideaqe/weather-java.svg?branch=develop)](https://travis-ci.org/ideaqe/weather-java)
 
 Regarding API see the [ideaqe/weather](https://github.com/ideaqe/weather) repository.
 
