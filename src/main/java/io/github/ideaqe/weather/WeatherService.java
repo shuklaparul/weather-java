@@ -7,6 +7,7 @@ import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.concurrent.ThreadSafe;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
@@ -40,6 +41,7 @@ public class WeatherService {
         return Observations.getInstance().getObservation(stationId, observationId);
     }
 
+    @ThreadSafe
     private static final class Observations {
 
         private final Map<Integer, Map<Integer, Observation>> observations = new ConcurrentHashMap();
@@ -78,14 +80,15 @@ public class WeatherService {
         }
 
         public void add(Observation observation) {
-            Map<Integer, Observation> result =
-                    observations.computeIfAbsent(observation.stationId, key -> new ConcurrentHashMap<>());
-            if (result.containsKey(observation.observationId)) {
+            Observation nullIfAssociated = observations
+                    .computeIfAbsent(observation.stationId, key -> new ConcurrentHashMap<>())
+                    .putIfAbsent(observation.observationId, observation);
+
+            if (nullIfAssociated != null) {
                 throw new CollisionException(
                         String.format("Observation for station %s with id %s already exists.",
                                 observation.stationId, observation.observationId));
             }
-            result.put(observation.observationId, observation);
         }
 
         public Observation getObservation(int stationId, int observationId) {
