@@ -11,7 +11,9 @@ dependencies {
              'org.glassfish.jersey.containers:jersey-container-servlet-core:2.22.2',
              'com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.6.+',
              'org.slf4j:slf4j-simple:1.7.18',
-             'com.google.code.findbugs:jsr305:3.0.1'])
+             'com.google.code.findbugs:jsr305:3.0.1',
+             'org.json:json:20090211',
+             'junit:junit:4.12'])
 
     testCompile([
             "junit:junit:4.12",
@@ -35,4 +37,3 @@ task createJar(type: Jar) {
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
 }
-
